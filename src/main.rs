@@ -11,29 +11,16 @@ fn print_usage(opts: &Options) {
         direction: Direction::LeftToRight,
     });
 
-    for i in [
-        "add",
-        "move file to trash",
-        "init",
-        "init trash",
-        "list",
-        "list files in trash",
-        "restore",
-        "restore file from trash",
-        "delete",
-        "permanently delete a file from the trash",
-        "empty",
-        "empty all items from trash",
-    ] {
-        grid.add(Cell::from(i))
-    }
-
     let usage = format!(
         "{} <command>
 Available subcommands:
-{}",
+add     move file to trash
+init    init trash
+list    list files in trash
+restore restore file from trash
+delete  permanently delete a file from the trash
+empty   empty all items from trash",
         opts.short_usage("trash"),
-        grid.fit_into_columns(2)
     );
     print!("{}", opts.usage(&usage));
 }
@@ -62,10 +49,33 @@ fn main() {
         Some(v) => v,
         None => return,
     };
+    let trash_dir = match home::home_dir() {
+        Some(mut dir) => {
+            dir.push(".trash-rs");
+            dir
+        }
+        None => return,
+    };
     match arg.as_str() {
         "init" => {
-            if fs::create_dir("TODO").is_err() {
-                eprintln!("Couldn't create trash directory at TODO")
+            if fs::create_dir(&trash_dir).is_err() {
+                eprintln!(
+                    "Couldn't create trash directory at {}. Does it already exist?",
+                    trash_dir.as_os_str().to_str().unwrap()
+                );
+            }
+        }
+        "list" => {
+            for entry in walkdir::WalkDir::new(&trash_dir) {
+                println!(
+                    "{}",
+                    entry
+                        .unwrap()
+                        .path()
+                        .strip_prefix(&trash_dir)
+                        .unwrap()
+                        .display()
+                );
             }
         }
         _ => print_usage(&opts),

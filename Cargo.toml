@@ -7,5 +7,5 @@ edition = "2021"
 
 [dependencies]
 getopts = "0.2.21"
-term_grid = "0.2.0"
 home = "0.5.3"
+walkdir = "2.3.2"

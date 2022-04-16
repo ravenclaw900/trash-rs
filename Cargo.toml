@@ -1,0 +1,11 @@
+[package]
+name = "trash"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+getopts = "0.2.21"
+term_grid = "0.2.0"
+home = "0.5.3"

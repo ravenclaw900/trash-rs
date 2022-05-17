@@ -37,8 +37,12 @@ fn main() {
             )
             .expect("Couldn't get database. Is trash initialized?");
 
-            for i in db.get_all() {
-                println!("{}", i);
+            for kv in db.iter() {
+                println!(
+                    "{}: {}",
+                    kv.get_key(),
+                    kv.get_value::<path::PathBuf>().unwrap().display()
+                );
             }
         }
         Commands::Add(cmd) => {

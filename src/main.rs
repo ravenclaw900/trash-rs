@@ -107,7 +107,7 @@ fn main() {
             } else if file_path.is_dir() {
                 fs::remove_dir_all(file_path).expect("Directory doesn't exist in trash");
             } else {
-                fs::remove_file(file_path).expect("File doesn't exist in trash")
+                fs::remove_file(file_path).expect("File doesn't exist in trash");
             }
 
             if db.exists(&cmd.name) {

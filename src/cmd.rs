@@ -1,6 +1,7 @@
 #![allow(clippy::module_name_repetitions)]
 
 use argh::FromArgs;
+use std::cmp::PartialEq;
 
 #[derive(FromArgs)]
 /// Small trash program
@@ -12,7 +13,7 @@ pub struct Args {
     pub recursive: bool,
 }
 
-#[derive(FromArgs)]
+#[derive(FromArgs, PartialEq)]
 #[argh(subcommand)]
 /// Subcommands
 pub enum Commands {
@@ -24,17 +25,17 @@ pub enum Commands {
     Empty(EmptySubCmd),
 }
 
-#[derive(FromArgs)]
+#[derive(FromArgs, PartialEq)]
 #[argh(subcommand, name = "init")]
 /// Init trash
 pub struct InitSubCmd {}
 
-#[derive(FromArgs)]
+#[derive(FromArgs, PartialEq)]
 #[argh(subcommand, name = "list")]
 /// List files in trash
 pub struct ListSubCmd {}
 
-#[derive(FromArgs)]
+#[derive(FromArgs, PartialEq)]
 #[argh(subcommand, name = "add")]
 /// Add file to trash
 pub struct AddSubCmd {
@@ -42,7 +43,7 @@ pub struct AddSubCmd {
     pub path: String,
 }
 
-#[derive(FromArgs)]
+#[derive(FromArgs, PartialEq)]
 #[argh(subcommand, name = "restore")]
 /// Restore file from trash
 pub struct RestoreSubCmd {
@@ -50,7 +51,7 @@ pub struct RestoreSubCmd {
     pub name: String,
 }
 
-#[derive(FromArgs)]
+#[derive(FromArgs, PartialEq)]
 #[argh(subcommand, name = "delete")]
 /// Delete file in trash
 pub struct DeleteSubCmd {
@@ -58,7 +59,7 @@ pub struct DeleteSubCmd {
     pub name: String,
 }
 
-#[derive(FromArgs)]
+#[derive(FromArgs, PartialEq)]
 #[argh(subcommand, name = "empty")]
 /// Empty files in trash
 pub struct EmptySubCmd {}

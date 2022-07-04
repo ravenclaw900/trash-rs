@@ -27,16 +27,29 @@ fn main() {
     };
     let mut metadata_path = trash_dir.clone();
     metadata_path.push(".metadata.db");
+    let mut db;
     match arg.cmd {
-        Commands::Init(_) => init_trash(&trash_dir, &metadata_path),
-        Commands::List(_) => {
-            let db = PickleDb::load(
-                metadata_path,
-                pickledb::PickleDbDumpPolicy::AutoDump,
+        Commands::Empty(_) => {
+            fs::remove_dir_all(&trash_dir).expect("Couldn't remove trash directory");
+            init_trash(&trash_dir, &metadata_path);
+            return;
+        }
+        Commands::Init(_) => {
+            init_trash(&trash_dir, &metadata_path);
+            return;
+        }
+        _ => {
+            db = PickleDb::load(
+                &metadata_path,
+                pickledb::PickleDbDumpPolicy::DumpUponRequest,
                 pickledb::SerializationMethod::Bin,
             )
             .expect("Couldn't get database. Is trash initialized?");
-
+        }
+    }
+    match arg.cmd {
+        Commands::Init(_) => init_trash(&trash_dir, &metadata_path),
+        Commands::List(_) => {
             for kv in db.iter() {
                 println!(
                     "{}: {}",
@@ -46,13 +59,6 @@ fn main() {
             }
         }
         Commands::Add(cmd) => {
-            let mut db = PickleDb::load(
-                metadata_path,
-                pickledb::PickleDbDumpPolicy::AutoDump,
-                pickledb::SerializationMethod::Bin,
-            )
-            .expect("Couldn't get database. Is trash initialized?");
-
             let cmd_path = path::Path::new(&cmd.path);
 
             if cmd_path.is_dir() && !arg.recursive {
@@ -74,13 +80,6 @@ fn main() {
                 .expect("Couldn't move file");
         }
         Commands::Restore(cmd) => {
-            let mut db = PickleDb::load(
-                metadata_path,
-                pickledb::PickleDbDumpPolicy::AutoDump,
-                pickledb::SerializationMethod::Bin,
-            )
-            .expect("Couldn't get database. Is trash initialized?");
-
             let file_path = &trash_dir.join(&cmd.name);
 
             if file_path.is_dir() && !arg.recursive {
@@ -97,13 +96,6 @@ fn main() {
             db.rem(&cmd.name).unwrap();
         }
         Commands::Delete(cmd) => {
-            let mut db = PickleDb::load(
-                metadata_path,
-                pickledb::PickleDbDumpPolicy::AutoDump,
-                pickledb::SerializationMethod::Bin,
-            )
-            .expect("Couldn't get database. Is trash initialized?");
-
             let file_path = &trash_dir.join(&cmd.name);
 
             if !db.exists(&cmd.name) {
@@ -123,9 +115,8 @@ fn main() {
                 db.rem(&cmd.name).unwrap();
             }
         }
-        Commands::Empty(_) => {
-            fs::remove_dir_all(&trash_dir).expect("Couldn't remove trash directory");
-            init_trash(&trash_dir, &metadata_path)
-        }
+        _ => unreachable!(),
     }
+
+    db.dump().expect("Couldn't dump database");
 }

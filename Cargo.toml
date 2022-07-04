@@ -7,5 +7,5 @@ edition = "2021"
 
 [dependencies]
 home = "0.5.3"
-pickledb = { version = "0.5.0", default-features = false, features = ["bincode"] }
-argh = "0.1.7"
+pickledb = { version = "0.5.1", default-features = false, features = ["bincode"] }
+argh = "0.1.8"

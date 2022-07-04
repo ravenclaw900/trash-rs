@@ -48,7 +48,6 @@ fn main() {
         }
     }
     match arg.cmd {
-        Commands::Init(_) => init_trash(&trash_dir, &metadata_path),
         Commands::List(_) => {
             for kv in db.iter() {
                 println!(

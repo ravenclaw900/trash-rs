@@ -49,6 +49,7 @@ fn main() {
     }
     match arg.cmd {
         Commands::List(_) => {
+            pager::Pager::new().setup();
             for kv in db.iter() {
                 println!(
                     "{}: {}",

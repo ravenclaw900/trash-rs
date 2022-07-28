@@ -9,3 +9,4 @@ edition = "2021"
 home = "0.5.3"
 pickledb = { version = "0.5.1", default-features = false, features = ["bincode"] }
 argh = "0.1.8"
+pager = "0.16.0"
